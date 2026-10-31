@@ -1,19 +1,31 @@
 from openai import OpenAI
+from dotenv import load_dotenv
+import os
+
+load_dotenv() #by default looks for .env file and load all variable in environment file from .env
+
 
 client = OpenAI(
-    base_url="http://172.29.16.1:11434/v1",
-    api_key="dummy_key"
+    base_url=os.getenv("BASE_URL"),
+    api_key=os.getenv("API_KEY")
 )
 
-response = client.chat.completions.create(
-    model="qwen3:1.7b",
-    messages=[
-        {
-            "role":"user",
-            "content":"Hello LLM!"
-        }
-    ]
-)
-
-print("LLM Response:")
-print(response.choices[0].message.content)  #response from llm model which is qwen3:1.7b parameter
+while True:
+    user_input = input("\n Kishan:")
+    
+    if user_input.lower() in ["exit", "quit", "bye", "goodbye"]:
+        break
+    
+    response = client.chat.completions.create(
+        model=os.getenv("MODEL"),
+        messages=[
+            {
+                "role":"user",
+                "content":user_input
+            }
+        ]
+    )
+    
+    
+    print("Asisstant: " + response.choices[0].message.content)  #response from llm model which is qwen3:1.7b parameter
+    print("Role:" + response.choices[0].message.role)
